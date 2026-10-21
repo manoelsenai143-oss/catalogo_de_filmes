@@ -6,7 +6,7 @@ load_dotenv()
 
 def criar_conexao():
     conn = psycopg2.connect(
-        host=os.eviron.get("DB_HOST"),
+        host=os.environ.get("DB_HOST"),
         database=os.environ.get("DB_NAME"),
         user=os.environ.get("DB_USER"),
         password=os.environ.get("DB_PASSWORD"),
