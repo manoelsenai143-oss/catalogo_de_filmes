@@ -1,5 +1,6 @@
 import psycopg2
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for
+from psycopg2 import sql
 from psycopg2.extras import RealDictCursor
 
 from database import criar_conexao
@@ -57,25 +58,40 @@ def cadastrar_filme():
          }
     ), 201
 
+@app.route('/deletar/<int:id>', methods=['POST'])
+def deletar_filme(id):
+    conn = criar_conexao()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM filmes WHERE id = %s", (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for("listar_fimes"))
 
-@app.route(rule='/produto', methods = ['PUT'])
-def atualizar_produto():
-    produto = {"id":1,
-    "nome": "Caneta azul",
-    "preco": 1.5,
-    "descricao": "Caneta esfereográfica",
-    "marca":"bic"}
 
-    dados = request.get_json()
-    if not dados:
-        return jsonify({"erro": "Dados invalidos"}), 400
+@app.route(rule='/novo', methods = ["GET", "POST"])
+def novo_filme():
+    if request.method == "POST":
+        titulo = request.form["titulo"]
+        genero = request.form["genero"]
+        capa_url = request.form["capa"]
+        nota = request.form["nota"]
+        ano_lancamento = request.form["ano_lancamento"]
+        usuario_id = 1
 
-    if dados["id"] == produto["id"]:
-        produto = dados
-        print(f"Novo produto: {produto}")
-        return jsonify({"message": "produto atualizado com sucesso!"}), 201
-    else:
-        return jsonify({"message": "produto não encontrado!"}), 404
+        parametros = [titulo, genero, capa_url, nota, ano_lancamento, usuario_id]
+
+        sql = '''INSERT INTO filmes (usuario_id, titulo, genero, nota, capa_url, usuario_id)
+         VALUES (%s, %s, %s, %s, %s, %s)'''
+
+        conn = criar_conexao()
+        cursor = conn.cursor()
+        cursor.execute(sql, parametros)
+        conn.commit()
+        conn.close()
+        return redirect(url_for("listar_filmes"))
+
+    return render_template("novo_filme.html")
+
 
 @app.route('/teste/db', methods = ['GET'])
 def testar_conexao():

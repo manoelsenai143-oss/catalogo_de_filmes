@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Filme</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+
+</head>
+<body>
+    <header class="navbar">
+        <h1 class="logo">DEV<span>FLIX</span></h1>
+    </header>
+
+    <section class="form-container">
+        <h2>Cadastrar Novo Filme</h2>
+
+        <form method="POST" class="form-filme">
+            <input type="text" name="titulo" placeholder="Nome do Filme" required>
+            <input type="text" name="genero" placeholder="gênero" required>
+            <input type="date" name="ano_lançamento" placeholder="Data de Lançamento" required>
+            <input type="number" name="nota" placeholder="Nota" required>
+            <input type="text" name="capa" placeholder="URL da Capa">
+
+            <button type="submit" class="btn-save">
+                Salvar Filme
+            </button>
+        </form>
+        <a href="{{ listar_flmes }}" class="btn-back">
+            Voltar ao catálogo
+        </a>
+    </section>
+</body>
+</html>
